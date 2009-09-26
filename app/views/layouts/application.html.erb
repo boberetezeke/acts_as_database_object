@@ -1,0 +1,272 @@
+<html>
+<head>
+	<title><%= @model_params[:title] %></title>
+	<% if !params["script"] || params["script"] != "none" then %>
+ 	<script src="/javascripts/prototype.js" type="text/javascript"></script>
+ 	<script src="/javascripts/effects.js" type="text/javascript"></script>
+ 	<script src="/javascripts/dragdrop.js" type="text/javascript"></script>
+	<script src="/javascripts/controls.js" type="text/javascript"></script>
+	<script src="/javascripts/rounded_corners.inc.js" type="text/javascript"></script>
+	<script src="/javascripts/shcore.js" type="text/javascript"></script>
+	<script src="/javascripts/shbrushjscript.js" type="text/javascript"></script>
+	<script src="/javascripts/shbrushruby.js" type="text/javascript"></script>
+	<script src="/javascripts/shbrushcss.js" type="text/javascript"></script>
+
+	<script src="/javascripts/history.js" type="text/javascript"></script>
+	<% ObjectDatabaseJavascript.find(:all).each do |js| %>
+		<script src=<%= '"' + "/javascripts/#{js.name}.js" + '"' %>, type="text/javascript"></script>
+	<% end %>
+	<link href="/stylesheets/ruby.css" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/main.css" rel="stylesheet" type="text/css">
+<script type="text/JavaScript">
+
+  var odrails_onload_handlers = []
+
+Event.observe(window, 'load', function() {
+  //window.onload = function() {
+    //console.log("in windows onload function in application.rhtml");
+    dp.SyntaxHighlighter.ClipboardSwf = '/flash/clipboard.swf';
+    dp.SyntaxHighlighter.HighlightAll('code');
+    //console.log("after syntax highlighter")
+    odrails_onload_handlers.each(function(handler) {
+    	handler.call()
+    })
+//  }
+})
+
+  odrails_onload_handlers.push( function() {
+    var history = new History
+    history.initialize("command", <%= @command_history %>)
+  })
+  
+  odrails_onload_handlers.push( function() {
+    //console.log("in rounded corners function in application.rhtml");
+    settings = {
+      tl: { radius: 10 },
+      tr: { radius: 10 },
+      bl: { radius: 10 },
+      br: { radius: 10 },
+      antiAlias: true,
+      autoPad: false
+    }
+
+    var cornersObj = new curvyCorners(settings, "sub-section");
+    cornersObj.applyCornersToAll();
+  })
+</script>
+<% end %>
+</head>
+<body>
+	<% if !params["layout"] || params["layout"] != "none" then %>
+	<table>
+		<tr>
+			<td colspan="3" align="center">
+				<h2><%= link_to("Object Database", "/") %></h2>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<%= link_to("hide frame", :controller => params["controller"], :action => params["action"], :id => params["id"], :params => {"layout" => "none"}) %>
+			</td>
+			<td align="left" class='context'>
+				Context: <%= @context_tags.map{|x| link_to(x, :controller => "object_database_tag", :action => "show", :id => x)}.join(",") %><br>
+				<% form_tag({:controller => "world", :action => :select_tag}, {:method => :post}) do %>
+					<%= select_tag("tags", options_for_select(@all_tags + [""], "")) %>
+				<% end %>				
+			</td>
+			<td align="right" class='command'>
+				<% form_tag({:controller => "world", :action => :evaluate_command}, {:method => :post}) do %>
+					<%= text_area_tag("command", nil, :cols => 40, :rows => 3) %>
+					<%= submit_tag("Go") %>
+				<% end %>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+	 			<% # cache(:controller => "bob", :action => "list") do %>
+				<div class="sub-section-outer">
+				<div class="sub-section">
+				<div class="sub-section-inner">
+				
+				<div class="sub-section-heading">Overview</div>
+				
+				<div class="sub-section-content">
+				<%= link_to("changes", :controller => "world", :action => "show_changes") %><br>
+				<%= link_to("command", :controller => "world", :action => "command") %><br>
+				<%= link_to("tags", :controller => "object_database_tag", :action => "list") %><br>
+				<%= link_to("force reload", :controller => "world", :action => "force_reload") %>
+				</div>
+				
+				</div>
+				</div>
+				</div>
+				
+				<div class="sub-section-outer">
+				<div class="sub-section">
+				<div class="sub-section-inner">
+				
+				<div class="sub-section-heading">Objects</div>
+				<div class="sub-section-content">
+				<% ObjectDatabaseModel.find(:all).each do |model| %>
+					<larger><%= link_to(model.name, :controller => "world", :action => "design", :type => "model", :id => model) %></larger>
+					<smaller>(
+						<%= 
+							link_to("list", :controller => model.name.tableize.singularize, :action => "list") 
+						%>,
+						<%=
+							link_to("new", :controller => model.name.tableize.singularize, :action => "new") 
+						%>
+						<% ObjectDatabaseView.find(:all, :conditions => ["controller = ?", model.name]).each do |view| %>
+							<% if view.name !~ /^_/ && !(["list", "new"].include?(view.name)) then %>
+								, <%= link_to(view.name, :controller => model.name.tableize.singularize, :action => view.name) %>
+							<% end %>
+						<% end %>
+					)</smaller>
+					<br>
+				<% end %>
+				<br>
+				<%= link_to("new object type", :controller => "object_database_model", :action => "new", :object_type => "object type") %><br>
+				</div>
+				
+				</div>
+				</div>
+				</div>
+
+				<% data_store_defined = true; begin; DataStore; rescue Exception; data_store_defined = false; end %>
+				<% if data_store_defined then %>
+					<div class="sub-section-outer">
+					<div class="sub-section">
+					<div class="sub-section-inner">
+					<div class="sub-section-heading">Data Stores</div>
+					<div class="sub-section-content">
+					<% DataStore.find(:all).each do |data_store|%>
+							<% controller = data_store.class.to_s.tableize.singularize %>
+							<%= short_store_name(data_store.name) %>
+							(<%=
+								link_to("edit", :controller => controller, :action => "edit", :id => data_store) 
+							%>,
+							<%=
+								link_to("test", :controller => controller, :action => "start_sync_only", :id => data_store) 
+							%>,							
+							<%=
+								link_to("sync", :controller => controller, :action => "sync", :id => data_store) 
+							%>)<br>
+					<% end %>
+					<% form_tag({:controller => "object_database_data_store", :action => "new_instance"}, {:method => :post}) do %>
+						<%= select_tag("data_stores", options_for_select(ObjectDatabaseDataStore.find(:all).map{|x| x.name})) %><br>
+						<%= submit_tag("new data store") %>
+					<% end %>
+					<% ObjectDatabaseDataStore.find(:all).each do |data_store| %>
+						<larger><%= link_to(data_store.name, :controller => "object_database_data_store", :action => "show", :id => data_store) %></larger>
+						<br>
+					<% end %>
+					<%= link_to("new type of data store", :controller => "object_database_data_store", :action => "new", :object_type => "type of data store") %><br>
+					</div>
+					</div>
+					</div>
+					</div>
+				<% end %>
+				
+				<div class="sub-section-outer">
+				<div class="sub-section">
+				<div class="sub-section-inner">
+				<div class="sub-section-heading">Command Handlers</div>
+				<div class="sub-section-content">
+				<% ObjectDatabaseCommandHandler.find(:all).each do |command_handler| %>
+					<larger><%=h command_handler.prefix %> - <%= link_to(command_handler.name, :controller => "object_database_command_handler", :action => "show", :id => command_handler) %></larger>
+					<br>
+				<% end %>
+				<br>
+				<%= link_to("new command handler", :controller => "object_database_command_handler", :action => "new") %>
+				</div>
+				</div>
+				</div>
+				</div>
+
+				<div class="sub-section-outer">
+				<div class="sub-section">
+				<div class="sub-section-inner">
+				<div class="sub-section-heading">Workers</div>
+				<div class="sub-section-content">
+				<% ObjectDatabaseWorker.find(:all).each do |worker| %>
+					<larger><%= link_to(worker.name, :controller => "object_database_worker", :action => "show", :id => worker) %></larger>
+					<br>
+				<% end %>
+				<br>
+				<%= link_to("new worker", :controller => "object_database_worker", :action => "new", :object_type => "worker") %>
+				</div>
+				</div>
+				</div>
+				</div>
+
+				<div class="sub-section-outer">
+				<div class="sub-section">
+				<div class="sub-section-inner">
+				<div class="sub-section-heading">Ruby</div>
+				<div class="sub-section-content">
+				<% ObjectDatabaseRuby.find(:all).each do |rb| %>
+					<larger><%= link_to(rb.full_name, :controller => "object_database_ruby", :action => "show", :id => rb) %></larger>
+					<br>
+				<% end %>
+				<br>
+				<%= link_to("new ruby code", :controller => "object_database_ruby", :action => "new", :object_type => "ruby") %>
+				</div>
+				</div>
+				</div>
+				</div>
+
+				<div class="sub-section-outer">
+				<div class="sub-section">
+				<div class="sub-section-inner">
+				<div class="sub-section-heading">Javascript</div>
+				<div class="sub-section-content">
+				<% ObjectDatabaseJavascript.find(:all).each do |js| %>
+					<larger><%= link_to(js.name, :controller => "object_database_javascript", :action => "show", :id => js) %></larger>
+					<br>
+				<% end %>
+				<br>
+				<%= link_to("new javascript code", :controller => "object_database_javascript", :action => "new", :object_type => "javascript") %>
+				</div>
+				</div>
+				</div>
+				</div>
+
+
+				<div class="sub-section-outer">
+				<div class="sub-section">
+				<div class="sub-section-inner">
+				<div class="sub-section-heading">Administration</div>
+				<div class="sub-section-content">
+				<%= link_to("Configuration", :controller => "object_database_configuration", :action => "edit", :id => 1) %><br>
+				<%= link_to("Write rails files", :controller => "world", :action => "write_rails_files") %><br>
+				</div>
+				</div>
+				</div>
+				</div>
+				
+				<div class="sub-section-outer">
+				<div class="sub-section">
+				<div class="sub-section-inner">
+				<div class="sub-section-heading">Internal Objects</div>
+				<div class="sub-section-content">
+				<%= link_to("Source code", :controller => "object_database_source_code", :action => "list") %>
+				</div>
+				</div>
+				</div>
+				</div>
+				
+				<% # end # of cache %>
+			</td>
+			<td valign="top" class="main-content" colspan="2">
+				<%= yield %>
+			</td>
+		</tr>
+	</table>
+	<% else %>
+		<%= link_to("show frame", :controller => params["controller"], :action => params["action"], :id => params["id"]) %>
+		<div class="main-content">
+			<%= yield %>
+		</div>
+	<% end %>
+</body>
+</html>

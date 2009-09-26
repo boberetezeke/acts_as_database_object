@@ -1,0 +1,3 @@
+class ObjectDatabaseWorkerController < ObjectDatabaseSourceCodeController
+	acts_as_metadata_crud_controller ObjectDatabaseWorker
+end

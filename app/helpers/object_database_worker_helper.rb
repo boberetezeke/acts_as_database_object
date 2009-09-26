@@ -1,0 +1,3 @@
+module ObjectDatabaseWorkerHelper
+	include ActsWithMetaDataHelper
+end

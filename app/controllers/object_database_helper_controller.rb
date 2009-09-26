@@ -1,0 +1,3 @@
+class ObjectDatabaseHelperController < ObjectDatabaseSourceCodeController
+	acts_as_metadata_crud_controller ObjectDatabaseHelper
+end

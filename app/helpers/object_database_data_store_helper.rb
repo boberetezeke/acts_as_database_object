@@ -1,0 +1,3 @@
+module ObjectDatabaseDataStoreHelper
+	include ActsWithMetaDataHelper
+end
