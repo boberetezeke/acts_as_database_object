@@ -1,0 +1,25 @@
+<div class="title-and-actions">
+	<table width="100%">
+		<tr>
+			<td align="left" class="title"><%= @model_params[:title] %></td>
+			<td align="right" class="actions">
+			</td>
+		</tr>
+	</table>
+</div>
+<%= form_tag({:action => :evaluate_command}, {:method => :post}) %>
+<%= text_area_tag("command", nil, :cols => 80, :rows => 2) %><br>
+<%= submit_tag("Enter Command") %>
+<%= end_form_tag %>
+<% @commands.each_with_index do |command,index| %>
+	<strong>Command:</strong> <%= command.command %><br>
+	<% if index < 1 then %>
+		<strong>Result:</strong> <%= inspect_to_html(command.result) %><br>
+		<% if command.output %>
+			<strong>Output</strong> <%= command.output.gsub(/\n/, "<br>") %>
+		<% end %>
+		<strong>Date:</strong> <%= command.when_created ? time_ago_in_words(command.when_created) : "" %>
+	<% end %>
+	<hr>
+<% end %>
+

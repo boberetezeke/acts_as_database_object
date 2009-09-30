@@ -1,0 +1,28 @@
+<div class="title-and-actions">
+	<table width="100%">
+		<tr>
+			<td align="left"><div class="title">Design <%= @object_model.name %></div></td>
+			<td align="right">
+				<div class="actions">
+				<%= link_to("edit model", :controller => @object_model_controller, :action => "edit", :id => @object_model) %> |
+				<%= link_to("edit controller", :controller => "object_database_controller", :action => "edit", :id => @object_controller) %> |
+				<%= link_to("edit helper", :controller => "object_database_helper", :action => "edit", :id => @object_helper) %> |
+				Views:
+				<% @object_views.each do |view| %>
+					<%= link_to("edit view #{view.name}", :controller => "object_database_view", :action => "edit", :id => view) %> |
+				<% end %>
+				<br>
+				<% form_tag(:controller => "world", :action => "create_view") do %>
+					<input id="model_controller", name="model[controller]", value=<%= @object_controller.name %> type="hidden" />
+					<input id="model_view", name="model[view]", value = "" /><br>
+					<%= submit_tag("Add View") %>
+				<% end %>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+<br>
+<%= render(:partial => "metacrud/model_show", :object => @object_model, :locals => {:model_params => {:members => @object_model.class.members}}) %>
+
+

@@ -1,0 +1,43 @@
+<div class="title-and-actions">
+	<table width="100%">
+		<tr>
+			<td align="left" class="title"><%= @model_params[:title] %></td>
+			<td align="right" class="actions">
+				<%= link_to("Recent", :action => "show_changes", :limit => 100, :max_entries_per_bucket => 30) %> |
+				<%= link_to("Historic", :action => "show_changes", :limit => 300, :max_entries_per_bucket => 15) %> |
+				<%= link_to("Pre-Historic", :action => "show_changes", :limit => 600, :max_entries_per_bucket => 5) %> |
+				<%= link_to("Ancient", :action => "show_changes", :limit => 1000, :max_entries_per_bucket => 5) %>
+			</td>
+		</tr>
+	</table>
+</div>
+<% next_bucket_title = "Now" %>
+<% @time_buckets.keys.sort.reverse.each do |time_bucket| %>
+	<div class="time-divider"><%= next_bucket_title %></div>
+	<table>
+	<% num_entries = 0 %>
+	<% @time_buckets[time_bucket].each do |change_type, change_time, change| %>
+		<tr>
+			<td valign="top" class="change-time">
+				<%= change_time.strftime("%I:%M%p:").downcase %>
+			</td>
+			<td class="change-description">
+				<%= render(:partial => "changes/change", :object => change, :locals => {:change_type => change_type, :change_time => change_time}) %>
+			</td>
+		</tr>
+		<% num_entries += 1 %>
+		<% if num_entries > @max_entries_per_bucket then %>
+			<tr>
+				<td></td>
+				<td class="change-overflow"><%= @time_buckets[time_bucket].size - @max_entries_per_bucket %> more entries</td>
+			</tr>
+			<% break %>
+		<% end %>
+	<% end %>
+	<% next_bucket_title = time_bucket.strftime("%I:%M%p").downcase %>
+	<% if Time.local(time_bucket.year, time_bucket.month, time_bucket.day) != Time.local(Time.now.year, Time.now.month, Time.now.day) %>
+		<% next_bucket_title = time_bucket.strftime("%A %m/%d ") + next_bucket_title %>
+	<% end %>
+	</table>
+<% end %>
+

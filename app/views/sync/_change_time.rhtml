@@ -1,0 +1,5 @@
+<% if Time.now - change_time > 4.days then %>
+	<%= change_time.strftime("%m/%d/%Y %I:%M%p").downcase %>
+<% else %>
+	<%= time_ago_in_words(change_time, true) %> ago
+<% end %>

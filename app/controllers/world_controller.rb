@@ -17,6 +17,11 @@ class WorldController < ApplicationController
    end
 =end
 
+	def force_reload
+		ActionController::Dispatcher.force_application_cleanup
+		redirect_to :action => "main"
+	end
+
 	def main
 		@model_params = {}
 		@model_params[:title] = "Main"

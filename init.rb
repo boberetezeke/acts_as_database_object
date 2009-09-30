@@ -13,12 +13,8 @@ $LOAD_PATH << File.join(directory, "lib")
   Dependencies.load_once_paths.delete(path)
 end
 
-puts "here 1"
-
 # third party libraries
 require "acts_as_ferret"
-
-puts "here 2"
 
 # local requires
 require "acts_as_database_object"
@@ -27,13 +23,16 @@ require "obdb/AR_ObjectDatabase"
 require "difffile/DiffChange"
 require "obdb/AR_BigString"
 
-puts "here 3"
-
 DiffChange.set_temp_dir "#{RAILS_ROOT}/db"
 BigString.set_temp_dir "#{RAILS_ROOT}/db"
 BigString.set_max_length_in_memory(4096)
 
-puts "here 4"
+class ActiveRecord::Base
+	def inspect(*args, &block)
+		super
+	end
+end
+
 
 ObjectDatabase.new("#{RAILS_ROOT}/db", false, "#{RAILS_ROOT}/app/models", "mysql")
 
@@ -62,6 +61,7 @@ module ::ActionController
   			end
   			
 	 		def force_application_cleanup
+	 			$TRACE.debug 5, "force_application_cleanup"
  				@do_cleanup_application = true
  			end
 
@@ -77,18 +77,20 @@ module ::ActionController
   		end
   		
  		def reload_application 			
- 			puts "in reload_application"
+ 			$TRACE.debug 5,  "in reload_application"
  			if self.class.do_reload_application then
 	 			old_reload_application 
-	 			puts "after old reload"
+				ObjectDatabaseTag		# KLUDGE: force this to be evaluated to initialize tagging behavior
+	 			$TRACE.debug 5,  "after old reload"
 	 		end
  		end
 
  		def cleanup_application
- 			puts "in cleanup_application"
+ 			$TRACE.debug 5,  "in cleanup_application"
  			if self.class.do_cleanup_application then
 	 			old_cleanup_application 
-	 			puts "after old cleanup"
+	 			$from_models = nil	# KLUDGE: clear out global for ObjectDatabaseTag
+	 			$TRACE.debug 5,  "after old cleanup"
 			end
 			self.class.after_cleanup_application
  		end

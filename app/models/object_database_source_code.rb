@@ -1,6 +1,7 @@
 class ObjectDatabaseSourceCode < ActiveRecord::Base
 	acts_as_database_object
 	has_field :name
+	has_field :is_plugin_source_code, :type => :boolean, :default => false
 
 	before_save :update_name
 	before_save :set_source_code_has_changed
@@ -14,10 +15,12 @@ class ObjectDatabaseSourceCode < ActiveRecord::Base
 	end
 
 	def update_name
-		self.name = name_from_content
+		self.name = name_from_content unless self.is_plugin_source_code
 	end
 
 	def write_source_code(filename)
+		return if self.is_plugin_source_code
+
 		#puts "-----------------------------------------------------------"
 		#puts filename
 		#puts "-----------------------------------------------------------"

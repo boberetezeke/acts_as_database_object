@@ -1,0 +1,15 @@
+<% if change_type == ObjectChange::ADDITION %>
+	<% ar_object = change.database_object.ar_object %>
+	Added <%= ar_object.class_name %> <%= render(:partial => "sync/change_time", :object => change_time) %>: <%= relationship_link_to(nil, ar_object) %>
+<% elsif change_type == ObjectChange::DELETION %>
+	<% ar_object = change.database_object.ar_object %>
+	Deleted object <%= ar_object.class %> <%= relationship_link_to(nil, ar_object) %>
+<% else %>
+	<% begin %>
+	<% ar_object = change.object_change.database_object.ar_object %>
+	Changed <%= render :partial => "changes/member_change", :object => change, :locals => {:parent_class => ar_object.class_name.constantize, :parent => ar_object, :display_object => true, :change_time => change_time} %>
+	<% rescue Exception => e %>
+	<%=h e.message %>
+	<% end %>
+<% end %>
+

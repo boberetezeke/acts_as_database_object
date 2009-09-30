@@ -1,0 +1,27 @@
+<% if @status.str != "done" then %>
+	<script type="text/javascript">
+	  odrails_onload_handlers.push(<%= @updater %>)
+	</script>
+<% end %>
+
+<div class="title-and-actions">  
+  <table width="100%">  
+    <tr>  
+      <td align="left"><div class="title">Syncing <%= @status.store_name %></div></td>  
+      <td align="right">  
+        <div id="sync-spinner" class="actions" style="display:none">Actions:    
+          <span class="action">  
+             <%= link_to_remote("Stop",   
+                         :url => {:action => "stop", :id => params["id"]})
+             %>  
+          </span>  
+          <img src="/images/ajax-bar-spinner-small-blue.gif"></img>  
+        </div>   
+      </td>  
+    </tr>  
+  </table>  
+</div>  
+
+<div id="status">
+	<%= render :partial => "sync/status_partial" %>
+</div>

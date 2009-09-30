@@ -1,0 +1,18 @@
+<% if change_time then %>
+	<%= render(:partial => "sync/change_time", :object => change_time) %>
+	:
+<% end %>
+<% if !display_object then %>
+	Changed 
+<% end %>
+<% member = parent_class.members[member_change.member] %>
+<% if member %>
+	<strong><%= member.display_name %></strong>
+<% else %>
+	<strong>member (<%= member_change.member %>) missing</strong>
+<% end %>
+<% if display_object then %>
+	for <%= parent_class %> <%= relationship_link_to(nil, parent) %>, 
+<% end %>
+<%= display_change(member_change.change_value) %>
+

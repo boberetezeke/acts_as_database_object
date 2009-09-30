@@ -1,0 +1,45 @@
+<%
+# parameters:
+#   changes - array of changes where each change is a triplet
+#   start_index - index of where the changes start
+#   end_index - index of where the changes end
+#   next_start_index - index of next page of changes
+#   changes_next_start_param_name - the parameter name of the next starting param name
+#   changes_next_end_param_name - the parameter name of the next ending param name
+%>
+<% if changes.empty? then %>
+	<strong>no changes since last sync</strong>
+<% else %>
+
+	<strong>Changes: (<%= start_index + 1 %> to <%= end_index + 1 %>)</strong> |
+	<% if start_index == 0 %>
+		begin
+	<% else %>
+		<%= link_to("begin", :controller => controller, :action => action, :id => @id, :params => @other_params.merge({param_index_name => 0})) %>
+	<% end %>
+	|
+	<% if start_index == 0 %>
+		prev
+	<% else %>
+		<%= link_to("prev", :controller => controller, :action => action, :id => @id, :params => @other_params.merge({param_index_name => prev_start_index})) %> 
+	<% end %> 
+	|
+	<% if next_start_index == -1 %>
+		next
+	<% else %>
+		<%= link_to("next", :controller => controller, :action => action, :id => @id, :params => @other_params.merge({param_index_name => next_start_index})) %>
+	<% end %>
+	|
+	<% if last_start_index == -1 %>
+		end
+	<% else %>
+		<%= link_to("end", :controller => controller, :action => action, :id => @id, :params => @other_params.merge({param_index_name => last_start_index})) %>
+	<% end %>
+
+	<br>
+
+	<% changes[start_index..end_index].each do |change_type, change_time, change| %>
+		<%= render(:partial => "changes/change", :object => change, :locals => {:change_type => change_type, :change_time => change_time}.merge(@other_params)) %>
+		<br>
+	<% end %>
+<% end %>

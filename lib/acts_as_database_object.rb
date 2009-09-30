@@ -316,6 +316,23 @@ puts "method_missing: sym = #{sym}"
 					base.extend ClassMethods
 				end
 
+	# this is a hack so that when we load the models up initially acts_as_ferret won't throw an 
+	# exception because the following method doesn't exist on ObjectDatabaseModel (which it doesn't)
+	# I think that this is because of STI and that ObjectDatabaseCommandHandler and ObjectDatabaseModel
+	# share the same table
+				def method_missing(sym, *args)
+					puts "method_missing: sym = #{sym}"
+					if sym.to_s =~ /to_ferret$/ then
+						puts "************************** REJECTED **************************"
+						return ""
+					else
+						super(sym, *args)
+					end
+				end
+	#def prefix_to_ferret
+		#return ""
+	#end
+
 				def initialize(*args)
 					self.track_changed_attributes = true
 					self.changed_attributes_aado = []

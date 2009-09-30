@@ -1,8 +1,23 @@
-ActsWithMetadata
+acts_as_database_object
 ================
 
-Introduction goes here.
+This add the ability to have an object database using rails as its user interface.
 
+
+Installation
+============
+
+Install 3rd party plugin dependencies
+
+1. classic_pagination
+2. active_record_defaults
+3. acts_as_tree
+4. engines (version 1.2.0)
+5. has_many_polymorphs
+6. acts_with_metadata
+7. acts_as_database_object
+8. 
+6. ruby_command
 
 Example
 =======

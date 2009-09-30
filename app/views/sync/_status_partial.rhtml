@@ -1,0 +1,20 @@
+<h2>Status: <%= @status.str %></h2>
+<% if @local_changes || @remote_changes %>
+	<table>
+		<tr>
+			<td><h2>Local Changes (<%= @local_changes.size %> changes)</h2></td>
+			<td><h2>Remote Changes (<%= @remote_changes.size %> changes)</h2></td>
+		</tr>
+		<tr>
+			<td valign="top" width="50%">
+				<%= render(:partial => "sync/sync_changes", :locals => @local_changes_params) %>
+			</td>
+			<td valign="top" width="50%">
+				<%= render(:partial => "sync/sync_changes", :locals => @remote_changes_params) %>
+			</td>
+		</tr>
+	</table>
+<% end %>
+<h2>Log:</h2>
+<p><%= @status.log.gsub(/\n/, '<br>') %></p>
+

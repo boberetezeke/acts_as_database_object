@@ -19,7 +19,7 @@ EOT
 			ObjectDatabaseCommandHandler.new(:content => TEMPLATE)
 		end
 	end
-
+	
 	def name_from_content
 		/class\s+(\w+)Handler </.match(self.content)[1]
 	end
