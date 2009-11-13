@@ -23,12 +23,12 @@
   var odrails_onload_handlers = []
 
 Event.observe(window, 'load', function() {
-  window.onload = function() {
+  //window.onload = function() {
     //console.log("in windows onload function in application.rhtml");
     odrails_onload_handlers.each(function(handler) {
     	handler.call()
     })
-  }
+  //}
 })
 
   odrails_onload_handlers.push( function() {
@@ -80,7 +80,6 @@ Event.observe(window, 'load', function() {
 		</tr>
 		<tr>
 			<td valign="top">
-	 			<% # cache(:controller => "bob", :action => "list") do %>
 				<div class="sub-section-outer">
 				<div class="sub-section">
 				<div class="sub-section-inner">
@@ -251,8 +250,6 @@ Event.observe(window, 'load', function() {
 				</div>
 				</div>
 				</div>
-				
-				<% # end # of cache %>
 			</td>
 			<td valign="top" class="main-content" colspan="2">
 				<%= yield %>
