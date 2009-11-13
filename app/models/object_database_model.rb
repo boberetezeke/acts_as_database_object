@@ -8,9 +8,10 @@ class ObjectDatabaseModel < ObjectDatabaseSourceCode
 
 TEMPLATE=<<EOT
 class XX < ActiveRecord::Base
-  acts_as_database_object
+  acts_as_database_object do
 
-  #has_field :fieldname
+    #has_field :fieldname
+  end
 	
   #link_text {|x,c| x.fieldname}
 end

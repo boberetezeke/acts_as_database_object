@@ -35,7 +35,10 @@ module ActiveRecord #:nodoc:
 		#
 		#   class Page < ActiveRecord::Base
 		#     # assumes pages_versions table
-		#     acts_as_database_object
+		#     acts_as_database_object do
+		#       has_field :field_name
+		#       has_many :comments
+		#     end
 		#   end
 		#
 		# Example:
