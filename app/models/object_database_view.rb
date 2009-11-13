@@ -1,13 +1,13 @@
 class ObjectDatabaseView < ObjectDatabaseSourceCode
-  acts_as_database_object
+	acts_as_database_object do
+		has_field :controller
+	end
 
-  has_field :controller
+	validates_presence_of :controller
 
-  validates_presence_of :controller
+	after_save :write_view_code
 
-  after_save :write_view_code
-
-  link_text {|x,c| "View: #{x.name}"}
+	link_text {|x,c| "View: #{x.name}"}
 
 TEMPLATE=<<EOT
 <h2>XX view</h2>

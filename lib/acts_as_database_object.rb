@@ -80,8 +80,15 @@ module ActiveRecord #:nodoc:
 							opts = {:re_initialize => true, :excluded_columns => [:version]}
 						end
 						acts_with_metadata opts
+					end
+					
+					# allow the class to define all of its fields
+					yield if block_given?					
+
+					# we rely on modifying find and ferret
+					class_eval do
 						extend ObjectDatabaseFind
-						acts_as_ferret unless $testing
+						acts_as_ferret(:fields => self.declared_members.map{|x| x.field_name}) unless $testing
 					end
 					
 					# don't allow multiple calls

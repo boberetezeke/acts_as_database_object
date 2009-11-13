@@ -1,11 +1,11 @@
 class ObjectDatabaseRuby < ObjectDatabaseSourceCode
-	acts_as_database_object
+	acts_as_database_object do
+		has_field :content, :type => :text, :options => {:html_converter =>  proc{|b, x| "<pre name=\"code\" class=\"ruby:nocontrols\">" + CGI.escapeHTML(x) + "</pre>"}}
+		has_field :relative_path
+	end
 
 	serialize :content
 	after_save :write_model_code
-
-	has_field :content, :type => :text, :options => {:html_converter =>  proc{|b, x| "<pre name=\"code\" class=\"ruby:nocontrols\">" + CGI.escapeHTML(x) + "</pre>"}}
-	has_field :relative_path
 	
 	link_text {|x,c| "Ruby: #{x.full_name}"}
 

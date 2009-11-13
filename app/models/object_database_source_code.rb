@@ -1,14 +1,15 @@
 class ObjectDatabaseSourceCode < ActiveRecord::Base
-	acts_as_database_object
-	has_field :name
-	has_field :is_plugin_source_code, :type => :boolean, :default => false
+	acts_as_database_object do
+		has_field :name
+		has_field :is_plugin_source_code, :type => :boolean, :default => false
+
+		# CGI.escapeHTML(x)
+		#has_field :content, :type => :text, :options => {:html_converter =>  proc{|x| "<div class=\"ruby\">" + Syntax::Convertors::HTML.for_syntax("ruby").convert(x) + "</div>"}}
+		has_field :content, :type => :text, :options => {:html_converter =>  proc{|b, x| "<pre name=\"code\" class=\"ruby:nocontrols\">" + CGI.escapeHTML(x) + "</pre>"}}
+	end
 
 	before_save :update_name
 	before_save :set_source_code_has_changed
-
-	# CGI.escapeHTML(x)
-	#has_field :content, :type => :text, :options => {:html_converter =>  proc{|x| "<div class=\"ruby\">" + Syntax::Convertors::HTML.for_syntax("ruby").convert(x) + "</div>"}}
-	has_field :content, :type => :text, :options => {:html_converter =>  proc{|b, x| "<pre name=\"code\" class=\"ruby:nocontrols\">" + CGI.escapeHTML(x) + "</pre>"}}
 
 	def name_from_content
 		/class\s+(\w+)/.match(self.content)[1]

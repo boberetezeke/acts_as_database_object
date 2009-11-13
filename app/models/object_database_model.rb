@@ -1,5 +1,6 @@
 class ObjectDatabaseModel < ObjectDatabaseSourceCode
-	acts_as_database_object
+	acts_as_database_object do
+	end
 
 	serialize :content
 	after_save :write_model_code

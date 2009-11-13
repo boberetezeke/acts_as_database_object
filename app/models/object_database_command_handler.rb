@@ -1,7 +1,7 @@
 class ObjectDatabaseCommandHandler < ObjectDatabaseSourceCode
-	acts_as_database_object
-
-	has_field :prefix
+	acts_as_database_object do 
+		has_field :prefix
+	end
 
 	after_save :write_handler_code
 

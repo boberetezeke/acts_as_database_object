@@ -1,13 +1,13 @@
 class ObjectDatabaseTag < ActiveRecord::Base
-  acts_as_database_object
+  acts_as_database_object do
+	  has_field :name
+  end
 
 puts "************************ in ObjectDatabaseTag **************************"
 puts "************************ in ObjectDatabaseTag **************************"
 puts "************************ in ObjectDatabaseTag **************************"
 puts "************************ in ObjectDatabaseTag **************************"
 puts "************************ in ObjectDatabaseTag **************************"
-
-  has_field :name
 
   DELIMITER = "," # Controls how to split and join tagnames from strings. You may need to change the <tt>validates_format_of parameters</tt> if you change this.
 

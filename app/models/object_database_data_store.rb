@@ -5,11 +5,12 @@ class ObjectDatabaseDataStore < ObjectDatabaseModel
 
 TEMPLATE=<<EOT
 class XX < DataStore
-   acts_as_database_object
+   acts_as_database_object do
 
-   # add in any fields that are specific to this data store
+      # add in any fields that are specific to this data store
 
-   #has_field :fieldname
+      #has_field :fieldname
+   end
 
    #
    # return database objects from store objects
