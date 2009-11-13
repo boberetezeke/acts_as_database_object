@@ -7,10 +7,10 @@
  	<script src="/javascripts/dragdrop.js" type="text/javascript"></script>
 	<script src="/javascripts/controls.js" type="text/javascript"></script>
 	<script src="/javascripts/rounded_corners.inc.js" type="text/javascript"></script>
-	<script src="/javascripts/shcore.js" type="text/javascript"></script>
-	<script src="/javascripts/shbrushjscript.js" type="text/javascript"></script>
-	<script src="/javascripts/shbrushruby.js" type="text/javascript"></script>
-	<script src="/javascripts/shbrushcss.js" type="text/javascript"></script>
+	<script src="/javascripts/shCore.js" type="text/javascript"></script>
+	<script src="/javascripts/shBrushJScript.js" type="text/javascript"></script>
+	<script src="/javascripts/shBrushRuby.js" type="text/javascript"></script>
+	<script src="/javascripts/shBrushCss.js" type="text/javascript"></script>
 
 	<script src="/javascripts/history.js" type="text/javascript"></script>
 	<% ObjectDatabaseJavascript.find(:all).each do |js| %>
@@ -23,15 +23,12 @@
   var odrails_onload_handlers = []
 
 Event.observe(window, 'load', function() {
-  //window.onload = function() {
+  window.onload = function() {
     //console.log("in windows onload function in application.rhtml");
-    dp.SyntaxHighlighter.ClipboardSwf = '/flash/clipboard.swf';
-    dp.SyntaxHighlighter.HighlightAll('code');
-    //console.log("after syntax highlighter")
     odrails_onload_handlers.each(function(handler) {
     	handler.call()
     })
-//  }
+  }
 })
 
   odrails_onload_handlers.push( function() {
@@ -268,5 +265,9 @@ Event.observe(window, 'load', function() {
 			<%= yield %>
 		</div>
 	<% end %>
+	<script type="text/JavaScript">
+		dp.SyntaxHighlighter.ClipboardSwf = '/flash/clipboard.swf';
+		dp.SyntaxHighlighter.HighlightAll('code');
+	</script>
 </body>
 </html>
