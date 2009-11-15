@@ -26,5 +26,6 @@ EOT
 	def write_model_code
 		filename = "app/models/#{self.name.tableize.singularize}.rb"
 		write_source_code(filename)
+		ActionController::Routing::Routes.reload!
 	end
 end
