@@ -143,7 +143,8 @@ class WorldController < ApplicationController
 			@time_buckets[time_bucket] ||= []
 			@time_buckets[time_bucket].push([change_type, change_time, change])
 		end
-
+		# make sure that all time buckets display in reverse chronological order
+		@time_buckets.each_key {|key| @time_buckets[key].reverse!}
 	end
 
 	def write_rails_files
